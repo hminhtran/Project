@@ -8,7 +8,7 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
     header("Location: ../../index.php");
     exit;
 }
- ?>
+?>
 <!DOCTYPE html>
 <html>
 
@@ -25,7 +25,8 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bbootstrap 4 -->
-    <link rel="stylesheet" href="../../admin/public/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet"
+        href="../../admin/public/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
     <!-- iCheck -->
     <link rel="stylesheet" href="../../admin/public/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- JQVMap -->
@@ -37,13 +38,16 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
     <!-- Daterange picker -->
     <link rel="stylesheet" href="../../admin/public/admin/plugins/daterangepicker/daterangepicker.css">
     <!-- summernote -->
-    <link rel="stylesheet" href="../../admin/public/admin/../../admin/public/admin/plugins/summernote/summernote-bs4.css">
+    <link rel="stylesheet"
+        href="../../admin/public/admin/../../admin/public/admin/plugins/summernote/summernote-bs4.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- DataTables -->
     <link rel="stylesheet" href="../../../admin/public/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="../../admin/public/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet"
+        href="../../admin/public/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="../../admin/public/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="../../admin/public/admin/dist/css/adminlte.min.css">
@@ -66,7 +70,7 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
             document.getElementById('timer').innerHTML = h + ":" + m + ":" + s;
 
             // Dùng hàm setTimeout để thiết lập gọi lại 0.5 giây / lần
-            var t = setTimeout(function() {
+            var t = setTimeout(function () {
                 startTime();
             }, 500);
         }
@@ -108,7 +112,8 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
                     <div class="navbar-search-block">
                         <form class="form-inline">
                             <div class="input-group input-group-sm">
-                                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                                <input class="form-control form-control-navbar" type="search" placeholder="Search"
+                                    aria-label="Search">
                                 <div class="input-group-append">
                                     <button class="btn btn-navbar" type="submit">
                                         <i class="fas fa-search"></i>
@@ -127,7 +132,8 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
+                    <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#"
+                        role="button">
                         <i class="fas fa-th-large"></i>
                     </a>
                 </li>
@@ -137,7 +143,8 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="" class="brand-link" style="background-color: black;">
-                <img src="../../admin/public/admin/dist/img/LogoCF.png" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <img src="../../admin/public/admin/dist/img/LogoCF.png" alt=""
+                    class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">COFFE MANAGE</span>
             </a>
 
@@ -149,15 +156,17 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
                         <img src="../../admin/public/admin/dist/img/admin.png" class="img-circle elevation-2" alt="">
                     </div>
                     <div class="info">
-                    <a href="chi_tiet_nv.php?Ma_nv=<?php echo strtoupper(str_replace(' ', '', $_SESSION['Ma_nv'])); ?>" class="d-block"><?php if (isset($_SESSION['Ma_nv'])) {
-                                                            echo strtoupper($_SESSION['Ma_nv']);
-                                                        } ?></a>
+                        <a href="chi_tiet_nv.php?Ma_nv=<?php echo strtoupper(str_replace(' ', '', $_SESSION['Ma_nv'])); ?>"
+                            class="d-block"><?php if (isset($_SESSION['Ma_nv'])) {
+                                echo strtoupper($_SESSION['Ma_nv']);
+                            } ?></a>
                     </div>
                 </div>
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
                         <li class="nav-item has-treeview">
@@ -166,7 +175,7 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
                                 <p>Trang chủ</p>
                             </a>
                         </li>
-                      
+
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-copy"></i>
@@ -175,7 +184,7 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                            <li class="nav-item">
+                                <li class="nav-item">
                                     <a href="doi_mk.php" class="nav-link">
                                         <i class="nav-icon far fa-calendar"></i>
                                         <p>Đổi mật khẩu</p>
@@ -187,19 +196,19 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] == 1) {
                                         <p>Ứng lương</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <!-- <li class="nav-item">
                                     <a href="add_cham_cong.php" class="nav-link">
                                         <i class="nav-icon fas fa-pen"></i>
                                         <p>Chấm công</p>
                                     </a>
-                                </li>
+                                </li> -->
                                 <li class="nav-item">
                                     <a href="add_nghi_viec.php" class="nav-link">
                                         <i class="nav-icon fas fa-pen"></i>
                                         <p>Nghỉ phép</p>
                                     </a>
                                 </li>
-                               
+
                                 <li class="nav-item">
                                     <a href="ql_bang_luong.php" class="nav-link">
                                         <i class="nav-icon far fa-calendar"></i>

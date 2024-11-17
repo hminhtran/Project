@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan QR Code</title>
+    <script src="../../node_modules/html5-qrcode/html5-qrcode.min.js"></script>
+    <style>
+        /* Thêm CSS tùy chỉnh tại đây */
+    </style>
+</head>
+
+<body>
+    <h1>Quét Mã QR</h1>
+    <div id="reader" style="width: 600px;"></div>
+
+
+    <!-- Thêm thẻ audio để phát âm thanh tít -->
+    <audio id="beepSound" src="barcode-scanner-182459.mp3"></audio>
+    <!-- Đảm bảo đường dẫn đến file âm thanh là chính xác -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const html5QrCode = new Html5Qrcode("reader");
+            const channel = new BroadcastChannel('product_channel');
+            const beepSound = document.getElementById('beepSound'); // Lấy thẻ âm thanh
+
+            // Bắt đầu quét mã ngay khi trang được tải
+            startScanning();
+
+            function startScanning() {
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 }
+                    },
+                    (decodedText, decodedResult) => {
+                        console.log("Quét thành công:", decodedText);
+
+                        // Phát âm thanh tít khi quét thành công
+                        beepSound.play();
+
+                        // Dừng âm thanh sau 1 hoặc 2 giây
+                        setTimeout(() => {
+                            beepSound.pause();
+                            beepSound.currentTime = 0; // Đặt lại về đầu âm thanh
+                        }, 1500); // Thời gian dừng âm thanh (1500 ms = 1.5 giây)
+
+                        // Lấy dữ liệu sản phẩm
+                        fetchProductData(decodedText);
+
+                        // Tắt camera và khởi động lại sau 1 giây
+                        html5QrCode.stop().then(() => {
+                            setTimeout(() => {
+                                startScanning(); // Khởi động lại quét
+                            }, 1000); // Thời gian tắt camera (1000 ms = 1 giây)
+                        }).catch((err) => {
+                            console.warn(`Lỗi khi dừng quét: ${err}`);
+                        });
+                    },
+                    (errorMessage) => {
+                        console.warn(`Lỗi quét: ${errorMessage}`);
+                    }
+                ).catch((err) => {
+                    console.error(`Lỗi khi bắt đầu quét: ${err}`);
+                });
+            }
+
+            function fetchProductData(productCode) {
+                fetch(`get_product.php?ma_sp=${productCode}`) // Vẫn giữ nguyên vì đây là nơi lấy dữ liệu sản phẩm
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Mạng lỗi');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Dữ liệu sản phẩm được gửi đến trang checkout:", data);
+                        channel.postMessage(data);
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi lấy dữ liệu sản phẩm:', error);
+                    });
+            }
+        });
+    </script>
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const channel = new BroadcastChannel('product_channel');
+
+            // Tạo dữ liệu mẫu
+            const mockData = {
+                ma_sp: 'SP12345',
+                TenSP: 'Sản phẩm mẫu',
+                gia_sp: 100000,
+                so_luong: 1,
+                GiaBan: 100000,
+            }
+                ;
+
+            // Xử lý khi nhấn nút "Gửi Dữ Liệu Mẫu"
+            const sendMockDataButton = document.getElementById('sendMockData');
+            sendMockDataButton.addEventListener('click', function () {
+                channel.postMessage(mockData);
+                console.log("Dữ liệu mẫu đã được gửi:", mockData);
+            });
+        });
+    </script> -->
+</body>
+
+</html>

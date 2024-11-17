@@ -27,7 +27,7 @@
                         <div class="card-header">
                             <h3 class="card-title">Thông tin tất cả sản phẩm</h3>
                             <div class="card-tools">
-                                <button onclick="window.location.href='add_nv.php'" class="btn btn-success">Thêm sản
+                                <button onclick="window.location.href='add_sp.php'" class="btn btn-success">Thêm sản
                                     phẩm</button>
                             </div>
                         </div>
@@ -38,42 +38,45 @@
                                     <tr>
                                         <th>Mã sản phẩm</th>
                                         <th>Hình ảnh</th>
-                                        <th>Tên sản phẩm</th>/
+                                        <th>Tên sản phẩm</th>
                                         <th>Loại sản phẩm</th>
-                                        <th>Đơn vị tính</th>/
-                                        <th>Nhà cung cấp</th>/
-                                        <th>Đơn giá nhập</th>/
-                                        <th>Đơn giá bán</th>/
-                                        <th>Lô nhập</th>
-                                        <th>Ngày hết hạn</th>
+                                        <th>Đơn vị tính</th>
+                                        <th>Nhà cung cấp</th>
+                                        <th>Đơn giá nhập</th>
+                                        <th>Đơn giá bán</th>
                                         <th>Hoạt động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- <?php
-                                    $sql = " SELECT nhan_vien.*,bo_phan.Ten,ca_lam_viec.Gio_bat_dau,ca_lam_viec.Gio_ket_thuc 
-                                             FROM nhan_vien 
-                                            JOIN bo_phan ON nhan_vien.ID_bophan = bo_phan.ID 
-                                            JOIN ca_lam_viec ON nhan_vien.ID_ca_lam = ca_lam_viec.ID;";
-                                    $stt = 0;
+                                    <?php
+                                    $sql = " SELECT sanpham.*,nhacungcap.TenNCC,loai_sp.ten_loai,donvitinh.DonVi
+                                             FROM sanpham
+                                            JOIN nhacungcap ON sanpham.IdNCC = nhacungcap.Id 
+                                            JOIN loai_sp ON sanpham.id_loai = loai_sp.id_loai
+                                            JOIN donvitinh ON sanpham.IdDVT = donvitinh.Id
+                                            ;";
                                     $result = mysqli_query($conn, $sql) or die("Câu lệnh truy vấn sai");
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         ?>
                                         <tr>
-                                            <td><?php echo $row['Ma_nv']; ?></td>
-                                            <td><img src="../../img/<?php echo $row['Avatar']; ?>" alt="Avatar"
+                                            <td><?php echo $row['Ma_sp']; ?></td>
+                                            <td><img src="../../img_sp/<?php echo $row['img_sanpham']; ?>" alt="Avatar"
                                                     style="width: 100px; height: 100px;"></td>
-                                            <td><?php echo $row['Hoten']; ?></td>
-                                            <td><?php echo $row['Ten']; ?></td>
-                                            <td><?php echo $row['Gio_bat_dau'] . ' đến ' . $row['Gio_ket_thuc'] ?></td>
+                                            <td><?php echo $row['TenSP']; ?></td>
+                                            <td><?php echo $row['ten_loai']; ?></td>
+                                            <td><?php echo $row['DonVi']; ?></td>
+                                            <td><?php echo $row['TenNCC']; ?></td>
+                                            <td><?php echo $row['GiaMua']; ?></td>
+                                            <td><?php echo $row['GiaBan']; ?></td>
+
                                             <td><button class="btn btn-primary"
-                                                    onclick="window.location.href='chi_tiet_nv.php?Ma_nv=<?php echo $row['Ma_nv'] ?>'"><i
+                                                    onclick="window.location.href='chi_tiet_sp.php?Ma_sp=<?php echo $row['Ma_sp'] ?>'"><i
                                                         class="fa fa-eye"></i></button>
                                                 <button class="btn btn-danger"
-                                                    onclick="confirmDelete('<?php echo $row['Ma_nv']; ?>')">Xóa</button>
+                                                    onclick="confirmDelete('<?php echo $row['Ma_sp']; ?>')">Xóa</button>
                                             </td>
                                         </tr>
-                                    <?php } ?> -->
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -85,7 +88,7 @@
             <script>
                 function confirmDelete(id) {
                     if (confirm("Bạn có chắc chắn muốn xóa? ")) {
-                        window.location.href = 'xoa_nv.php?x=' + id;
+                        window.location.href = 'xoa_sp.php?x=' + id;
                     } else {
                         // Hủy bỏ xóa
                     }

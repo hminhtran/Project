@@ -1,21 +1,23 @@
-<!-- <?php require 'header.php' ?>
+<?php require 'header.php' ?>
 <?php require_once "../src/db.php";
-$bo_phan = $conn->query("SELECT * FROM bo_phan");
-$ca_lam_viec = $conn->query("SELECT * FROM ca_lam_viec"); ?> -->
+$kho = $conn->query("SELECT * FROM kho_hang"); ?>
+<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Kho hàng</h1>
+                    <h1>Loại sản phẩm</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Kho</li>
                     </ol>
                 </div>
             </div>
-        </div>
+        </div><!-- /.container-fluid -->
     </section>
 
     <!-- Main content -->
@@ -24,72 +26,59 @@ $ca_lam_viec = $conn->query("SELECT * FROM ca_lam_viec"); ?> -->
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Thông tin tồn kho</h3>
-                            <div class="card-tools">
-                                <!-- <button onclick="window.location.href='add_nv.php'" class="btn btn-success">Thêm nhân
-                                    viên</button> -->
-                            </div>
-                        </div>
+
                         <!-- /.card-header -->
-                        <div class="card-body">
-                            <table id="example1" class="table table-bordered table-hover" style="text-align: center;">
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
                                 <thead>
                                     <tr>
-                                        <th>Mã SP</th>
-                                        <th>Tên Sản Phẩm</th>
-                                        <th>Mô tả</th>
-                                        <th>Số lượng</th>
-                                        <th>Hạn sử dụng</th>
-                                        <!-- <th>Hoạt động</th> -->
+                                        <th>Tên kho</th>
+                                        <th>Địa chỉ kho</th>
+                                        <th>Hoạt động</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- <?php
-                                    $sql = " SELECT nhan_vien.*,bo_phan.Ten,ca_lam_viec.Gio_bat_dau,ca_lam_viec.Gio_ket_thuc 
-                                             FROM nhan_vien 
-                                            JOIN bo_phan ON nhan_vien.ID_bophan = bo_phan.ID 
-                                            JOIN ca_lam_viec ON nhan_vien.ID_ca_lam = ca_lam_viec.ID;";
-                                    $stt = 0;
-                                    $result = mysqli_query($conn, $sql) or die("Câu lệnh truy vấn sai");
+                                    <?php
+                                    $sql = "SELECT * FROM kho_hang";
+                                    $result = mysqli_query($conn, $sql);
+                                    $s = 0;
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         ?>
                                         <tr>
-                                            <td><?php echo $row['Ma_nv']; ?></td>
-                                            <td><img src="../../img/<?php echo $row['Avatar']; ?>" alt="Avatar"
-                                                    style="width: 100px; height: 100px;"></td>
-                                            <td><?php echo $row['Hoten']; ?></td>
-                                            <td><?php echo $row['Ten']; ?></td>
-                                            <td><?php echo $row['Gio_bat_dau'] . ' đến ' . $row['Gio_ket_thuc'] ?></td>
-                                            <td><button class="btn btn-primary"
-                                                    onclick="window.location.href='chi_tiet_nv.php?Ma_nv=<?php echo $row['Ma_nv'] ?>'"><i
-                                                        class="fa fa-eye"></i></button>
-                                                <button class="btn btn-danger"
-                                                    onclick="confirmDelete('<?php echo $row['Ma_nv']; ?>')">Xóa</button>
+                                            <td>
+                                                <?php echo $row['ten_kho']; ?>
                                             </td>
+
+
+                                            <td><?php echo $row['dia_chi']; ?></td>
+                                            <td>
+                                                <a href="ql_ton_kho.php">
+                                                    Xem kho
+                                                </a>
+                                                -
+                                                <a href="ql_ke.php">
+                                                    Xem kệ
+                                                </a>
+                                            </td>
+
+
                                         </tr>
-                                    <?php } ?> -->
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
+                        <!-- /.card-body -->
                     </div>
-
-
+                    <!-- /.card -->
                 </div>
+                <!-- /.col -->
             </div>
-            <script>
-                function confirmDelete(id) {
-                    if (confirm("Bạn có chắc chắn muốn xóa? ")) {
-                        window.location.href = 'xoa_nv.php?x=' + id;
-                    } else {
-                        // Hủy bỏ xóa
-                    }
-                }
-            </script>
+            <!-- /.row -->
         </div>
-
+        <!-- /.container-fluid -->
     </section>
-
+    <!-- /.content -->
 </div>
-
-<?php require 'footer_ql.php' ?>
+<!-- /.content-wrapper -->
+<?php require 'footer.php' ?>

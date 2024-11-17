@@ -191,6 +191,12 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] != 1) {
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="cham_cong.php" class="nav-link">
+                                        <i class="nav-icon far fa-user"></i>
+                                        <p>Chấm công nhân viên</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="ql_bo_phan.php" class="nav-link">
                                         <i class="nav-icon fa-solid fa-users"></i>
                                         <p>Bộ phận</p>
@@ -221,9 +227,20 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] != 1) {
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
+                                    <a href="checkout.php" class="nav-link">
+                                        <i class="nav-icon fa-solid fa-users"></i>
+                                        <p>Thanh toán</p>
+                                    </a>
+                                <li class="nav-item">
                                     <a href="ql_kho.php" class="nav-link">
                                         <i class="nav-icon far fa-user"></i>
-                                        <p>Kho</p>
+                                        <p>Quản lý kho</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="ql_ke.php" class="nav-link">
+                                        <i class="nav-icon fa-solid fa-file"></i>
+                                        <p>Quản lý kệ</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -233,26 +250,32 @@ if (!isset($_SESSION['Ma_nv']) || $_SESSION['ID_bophan'] != 1) {
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="ql_ca_lam.php" class="nav-link">
+                                    <a href="ql_loaisp.php" class="nav-link">
+                                        <i class="nav-icon fa-solid fa-users"></i>
+                                        <p>Loại Sản phẩm</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="ql_dvt.php" class="nav-link">
                                         <i class="nav-icon fa-regular fa-clock"></i>
                                         <p>Đơn vị tính</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="ql_luong.php" class="nav-link">
+                                    <a href="ql_ncc.php" class="nav-link">
                                         <i class="nav-icon fa-solid fa-file"></i>
                                         <p>Nhà cung cấp</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="ql_luong.php" class="nav-link">
+                                    <a href="don_nhap.php" class="nav-link">
                                         <i class="nav-icon fa-solid fa-file"></i>
                                         <p>Đơn nhập hàng</p>
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="ql_luong.php" class="nav-link">
+                                    <a href="ql_don_ban.php" class="nav-link">
                                         <i class="nav-icon fa-solid fa-file"></i>
                                         <p>Đơn bán</p>
                                     </a>

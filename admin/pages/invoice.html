@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa Đơn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<script>console.log(sessionStorage.getItem('invoiceData'));</script>
+
+<body>
+
+    <h1>Hóa Đơn</h1>
+    <h3>Order ID: <span id="orderId"></span></h3> <!-- Thêm orderId ở đây -->
+    <table>
+        <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Giá bán</th>
+                <th>Số lượng</th>
+                <th>Tổng tiền</th>
+            </tr>
+        </thead>
+        <tbody id="invoiceTableBody"></tbody>
+    </table>
+    <h3 id="invoiceTotal"></h3>
+    <h3>Ngày giờ mua: <span id="purchaseDateTime"></span></h3>
+    <h3>Phương thức thanh toán: <span id="paymentMethod"></span></h3>
+    <button onclick="window.print()">In Hóa Đơn</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const invoiceData = JSON.parse(sessionStorage.getItem('invoiceData'));
+
+            if (invoiceData) {
+                const invoiceTableBody = document.getElementById('invoiceTableBody');
+                const invoiceTotal = document.getElementById('invoiceTotal');
+                const purchaseDateTime = document.getElementById('purchaseDateTime');
+                const paymentMethod = document.getElementById('paymentMethod');
+                const orderId = document.getElementById('orderId'); // Reference for Order ID
+
+                let total = 0;
+
+                // Display Order ID
+                orderId.innerText = invoiceData.orderId || 'Chưa có ID'; // Handle undefined orderId
+
+                // Add products to the table
+                invoiceData.products.forEach(product => {
+                    const row = document.createElement('tr');
+                    const productTotal = product.GiaBan * product.quantity;
+                    total += productTotal;
+
+                    row.innerHTML = `
+                <td>${product.TenSP}</td>
+                <td>${product.GiaBan} đ</td>
+                <td>${product.quantity}</td>
+                <td>${productTotal} đ</td>
+            `;
+                    invoiceTableBody.appendChild(row);
+                });
+
+                // Display the total
+                invoiceTotal.innerText = `Tổng tiền đơn hàng: ${total} đ`;
+
+                // Display purchase date and time
+                const currentDateTime = new Date().toLocaleString('vi-VN', {
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                });
+                purchaseDateTime.innerText = currentDateTime;
+
+                // Display payment method
+                paymentMethod.innerText = invoiceData.paymentMethod || 'Chưa chọn phương thức';
+            } else {
+                alert("Dữ liệu hóa đơn không tồn tại trong sessionStorage.");
+            }
+        });
+    </script>
+</body>
+
+</html>

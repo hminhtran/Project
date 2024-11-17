@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "qr-scanner": "^1.4.2"
+  },
+  "devDependencies": {
+    "html5-qrcode": "^2.3.8"
+  }
+}

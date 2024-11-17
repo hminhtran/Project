@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+
+<body>
+    <h1>Thông Tin Sản Phẩm</h1>
+
+    <!-- Bảng hiển thị sản phẩm -->
+    <table cellpadding="10">
+        <thead>
+            <tr>
+                <th>Mã sản phẩm</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá bán</th>
+                <th>Số lượng</th>
+                <th>Tổng tiền</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody">
+            <tr>
+                <td colspan="5">Chưa có sản phẩm</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Tổng tiền đơn hàng -->
+    <h2 id="orderTotal">Tổng tiền đơn hàng: 0 đ</h2>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const channel = new BroadcastChannel('product_channel');
+            const productTableBody = document.getElementById('productTableBody');
+            const orderTotalDiv = document.getElementById('orderTotal');
+
+            // Khởi tạo danh sách để chứa các sản phẩm đã quét
+            const productList = [];
+
+            // Hàm tìm kiếm sản phẩm trong danh sách
+            function findProduct(productCode) {
+                return productList.find(product => product.ma_sp === productCode);
+            }
+
+            // Lắng nghe các thông điệp từ trang scan
+            channel.onmessage = function (event) {
+                console.log("Dữ liệu sản phẩm nhận được từ trang scan:", event.data);
+
+                if (event.data) {
+                    // Kiểm tra sản phẩm đã tồn tại chưa
+                    const existingProduct = findProduct(event.data.ma_sp);
+
+                    if (existingProduct) {
+                        // Tăng số lượng nếu sản phẩm đã tồn tại
+                        existingProduct.quantity += 1;
+                    } else {
+                        // Thêm sản phẩm mới với số lượng mặc định là 1
+                        productList.push({ ...event.data, quantity: 1 });
+                    }
+
+                    // Cập nhật giao diện
+                    renderProductList();
+                }
+            };
+
+            // Hàm tính tổng tiền của một sản phẩm
+            function calculateTotal(product) {
+                return product.GiaBan * product.quantity;
+            }
+
+            // Hàm tính tổng tiền của toàn bộ đơn hàng
+            function calculateOrderTotal() {
+                return productList.reduce((total, product) => total + calculateTotal(product), 0);
+            }
+
+            // Hàm hiển thị danh sách sản phẩm
+            function renderProductList() {
+                // Xóa nội dung hiện tại
+                productTableBody.innerHTML = '';
+
+                // Kiểm tra nếu không có sản phẩm nào
+                if (productList.length === 0) {
+                    productTableBody.innerHTML = '<tr><td colspan="5">Chưa có sản phẩm</td></tr>';
+                } else {
+                    // Hiển thị danh sách sản phẩm trong bảng
+                    productList.forEach((product, index) => {
+                        const row = document.createElement('tr');
+
+                        row.innerHTML = `
+                            <td>${product.ma_sp}</td>
+                            <td>${product.TenSP}</td>
+                            <td>${product.GiaBan} đ</td>
+                            <td>
+                                <input type="number" value="${product.quantity}" 
+                                       min="1" 
+                                       onchange="updateQuantity(${index}, this.value)" />
+                            </td>
+                            <td>${calculateTotal(product)} đ</td>
+                        `;
+
+                        productTableBody.appendChild(row);
+                    });
+                }
+
+                // Cập nhật tổng tiền của đơn hàng
+                orderTotalDiv.innerHTML = `Tổng tiền đơn hàng: ${calculateOrderTotal()} đ`;
+            }
+
+            // Hàm cập nhật số lượng khi người dùng thay đổi
+            window.updateQuantity = function (index, newQuantity) {
+                productList[index].quantity = parseInt(newQuantity, 10);
+                renderProductList();
+            };
+        });
+    </script>
+</body>
+
+</html>

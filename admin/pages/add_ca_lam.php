@@ -1,4 +1,3 @@
-<?php require 'table.html' ?>
 <?php require 'header.php' ?>
 <?php require_once "../src/db.php";
 $nhan_vien = $conn->query("SELECT * FROM nhan_vien"); ?>
@@ -43,24 +42,24 @@ $nhan_vien = $conn->query("SELECT * FROM nhan_vien"); ?>
                         <button type="submit" name="btn" class="btn btn-primary">Thêm</button>
                     </div>
                     <?php
-                if (isset($_POST['btn'])) {
-                    $start = $_POST['gio_bat_dau'];
-                    $end = $_POST['gio_ket_thuc'];
-                    $kq = " select * from ca_lam_viec where Gio_bat_dau='$start'";
-                    $kq_con = mysqli_query($conn, $kq);
-                    $dem = mysqli_num_rows($kq_con);
-                    if ($dem > 0) {
-                        echo "Ca làm Đã Tồn Tại";
-                        exit();
-                    } else {
-                        $sql = "INSERT INTO ca_lam_viec VALUES(ID,'$start','$end')";
-                        $result = mysqli_query($conn, $sql);
-                        if ($result == true) {
-                            echo "Thêm Thành Công !Hãy vào <a href='ql_ca_lam.php'>Danh sách </a> để xem lại";
+                    if (isset($_POST['btn'])) {
+                        $start = $_POST['gio_bat_dau'];
+                        $end = $_POST['gio_ket_thuc'];
+                        $kq = " select * from ca_lam_viec where Gio_bat_dau='$start'";
+                        $kq_con = mysqli_query($conn, $kq);
+                        $dem = mysqli_num_rows($kq_con);
+                        if ($dem > 0) {
+                            echo "Ca làm Đã Tồn Tại";
+                            exit();
+                        } else {
+                            $sql = "INSERT INTO ca_lam_viec VALUES(ID,'$start','$end')";
+                            $result = mysqli_query($conn, $sql);
+                            if ($result == true) {
+                                echo "Thêm Thành Công !Hãy vào <a href='ql_ca_lam.php'>Danh sách </a> để xem lại";
+                            }
                         }
                     }
-                }
-                ?>
+                    ?>
                 </form>
             </div>
     </section>
