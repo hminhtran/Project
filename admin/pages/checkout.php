@@ -73,6 +73,9 @@
                         <td colspan="6">Chưa có sản phẩm</td>
                     </tr>
                     <tr>
+                        <div id="discountSummary" style="font-weight: bold; color: red">
+                            <p>Giảm giá: 0 đ</p> <!-- Hiển thị giảm giá tại đây -->
+                        </div>
                         <td colspan="4" style="text-align: right; font-weight: bold;">Tổng tiền đơn hàng:</td>
                         <td id="orderTotal" colspan="2" style="font-weight: bold;">0 đ</td>
                     </tr>
@@ -119,207 +122,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- <script>
-        const productList = []; // Định nghĩa biến productList ở đây để có thể truy cập từ nhiều nơi.
-
-        function calculateTotal(product) {
-            return product.GiaBan * product.quantity;
-        }
-
-        function calculateOrderTotal() {
-            return productList.reduce((total, product) => total + calculateTotal(product), 0);
-        }
-
-        window.printInvoice = function () {
-            const invoiceData = {
-                products: productList,
-                paymentMethod: document.getElementById('paymentMethod').value // Lấy giá trị phương thức thanh toán
-            };
-
-            sessionStorage.setItem('invoiceData', JSON.stringify(invoiceData));
-            window.open('invoice.html', '_blank'); // Mở trang hóa đơn mới
-        };
-
-        function togglePaymentOptions() {
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            const transferOptions = document.getElementById('transferOptions');
-            transferOptions.style.display = (paymentMethod === 'Chuyển khoản') ? 'block' : 'none';
-        }
-
-        function updateDateTime() {
-            const currentDateTime = new Date();
-            const formattedDateTime = currentDateTime.toLocaleString('vi-VN', {
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute: '2-digit', second: '2-digit'
-            });
-            document.getElementById('currentDateTime').textContent = formattedDateTime;
-        }
-
-        // Cập nhật thời gian hiện tại
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const channel = new BroadcastChannel('product_channel');
-            const productTableBody = document.getElementById('productTableBody');
-            const orderTotalDiv = document.getElementById('orderTotal');
-            const scanButton = document.getElementById('scanButton');
-
-            function findProduct(productCode) {
-                return productList.find(product => product.ma_theo_lo === productCode);
-            }
-
-            scanButton.addEventListener('click', function () {
-                window.open('scan.html', 'ScanQRPopup', 'width=600,height=600');
-            });
-
-            channel.onmessage = function (event) {
-                if (event.data) {
-                    const existingProduct = findProduct(event.data.ma_theo_lo);
-                    if (existingProduct) {
-                        existingProduct.quantity += 1;
-                    } else {
-                        productList.push({ ...event.data, quantity: 1 });
-                    }
-                    renderProductList();
-                }
-            };
-
-            function renderProductList() {
-                productTableBody.innerHTML = '';
-
-                if (productList.length === 0) {
-                    productTableBody.innerHTML = '<tr><td colspan="5">Chưa có sản phẩm</td></tr>';
-                } else {
-                    productList.forEach((product, index) => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${product.ma_theo_lo}</td>
-                            <td>${product.TenSP}</td>
-                            <td>${product.GiaBan} đ</td>
-                            <td>
-                                <input type="number" value="${product.quantity}" 
-                                       min="1" 
-                                       onchange="updateQuantity(${index}, this.value)" />
-                            </td>
-                            <td>${calculateTotal(product)} đ</td>
-                            <td> <button class="btn btn-danger" onclick="removeProduct(${index})">Xóa</button></td>
-                        `;
-                        productTableBody.appendChild(row);
-                    });
-                }
-
-                const totalRow = document.createElement('tr');
-                totalRow.innerHTML = `
-                    <td colspan="4" style="text-align: right; font-weight: bold;">Tổng tiền đơn hàng:</td>
-                    <td id="orderTotal" colspan="1" style="font-weight: bold;">${calculateOrderTotal()} đ</td>
-                    <td></td>
-                `;
-                productTableBody.appendChild(totalRow);
-            }
-
-            window.updateQuantity = function (index, newQuantity) {
-                productList[index].quantity = parseInt(newQuantity, 10);
-                renderProductList();
-            };
-
-            window.removeProduct = function (index) {
-                productList.splice(index, 1);
-                renderProductList();
-            };
-        });
-
-        function generateOrderID() {
-            const now = new Date();
-            const date = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}`;
-            const randomID = Math.floor(1000 + Math.random() * 9000); // Tạo số ngẫu nhiên
-            return `HD${date}-${randomID}`; // VD: HD20241110-1234
-        }
-        function processPayment() {
-            const orderData = {
-                products: productList,
-                orderId: generateOrderID(), // Tạo orderId mới
-                paymentMethod: document.getElementById('paymentMethod').value,
-                total: calculateOrderTotal()
-            };
-
-            // Lưu dữ liệu vào sessionStorage
-            sessionStorage.setItem('invoiceData', JSON.stringify(orderData));
-
-            fetch('xulithanhtoan.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderData),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message); // Hiển thị thông báo thành công
-
-                        // Mở trang hóa đơn trong tab mới
-                        window.open('invoice.html', '_blank'); // Mở trang invoice.html trong tab mới
-                    } else {
-                        alert(data.message); // Hiển thị thông báo lỗi
-                    }
-                })
-                .catch(error => {
-                    console.error('Có lỗi xảy ra:', error);
-                });
-        }
-
-        function searchProduct() {
-            const searchBox = document.getElementById('searchBox');
-            const suggestionsBox = document.getElementById('searchSuggestions');
-            const keyword = searchBox.value.trim();
-
-            if (!keyword) {
-                suggestionsBox.style.display = 'none';
-                return;
-            }
-
-            fetch(`search_products.php?keyword=${encodeURIComponent(keyword)}`)
-                .then(response => response.json())
-                .then(products => {
-                    if (Array.isArray(products)) {
-                        renderSuggestions(products);
-                    } else {
-                        console.error('Dữ liệu trả về không hợp lệ');
-                    }
-                })
-                .catch(err => console.error('Lỗi khi tìm kiếm:', err));
-        }
-
-        function renderSuggestions(products) {
-            const suggestionsBox = document.getElementById('searchSuggestions');
-            suggestionsBox.innerHTML = '';
-            products.forEach(product => {
-                const suggestion = document.createElement('div');
-                suggestion.textContent = `${product.ma_theo_lo} - ${product.TenSP}`;
-                suggestion.style.padding = '10px';
-                suggestion.style.cursor = 'pointer';
-                suggestion.onclick = () => addProductToList(product);
-                suggestionsBox.appendChild(suggestion);
-            });
-            suggestionsBox.style.display = 'block';
-        }
-
-        function addProductToList(product) {
-            const existingProduct = productList.find(p => p.ma_theo_lo === product.Ma_sp);
-            if (existingProduct) {
-                existingProduct.quantity += 1;  // Nếu đã có sản phẩm, tăng số lượng
-            } else {
-                productList.push({
-                    ma_theo_lo: product.ma_theo_lo,
-                    TenSP: product.TenSP,
-                    GiaBan: product.GiaBan,
-                    quantity: 1  // Số lượng mặc định là 1
-                });
-            }
-            renderProductList();
-        }
-    </script> -->
     <script>
         const productList = []; // Định nghĩa biến productList ở đây để có thể truy cập từ nhiều nơi.
 
@@ -453,7 +255,6 @@
                     })
                     .catch(err => console.error('Lỗi khi tìm kiếm:', err));
             }
-
             // Render gợi ý tìm kiếm
             function renderSuggestions(products) {
                 const suggestionsBox = document.getElementById('searchSuggestions');
@@ -474,17 +275,23 @@
                 const existingProduct = productList.find(p => p.ma_theo_lo === product.ma_theo_lo);
 
                 if (existingProduct) {
-                    existingProduct.quantity += 1;  // Nếu đã có sản phẩm, tăng số lượng
-                    searchBox.value = '';
+                    existingProduct.quantity += 1; // Nếu đã có sản phẩm, tăng số lượng
                 } else {
                     productList.push({
                         ma_theo_lo: product.ma_theo_lo,
                         TenSP: product.TenSP,
                         GiaBan: product.GiaBan,
-                        quantity: 1  // Số lượng mặc định là 1
+                        quantity: 1 // Số lượng mặc định là 1
                     });
-                    searchBox.value = '';
                 }
+
+                // Xóa giá trị trong ô tìm kiếm
+                document.getElementById('searchBox').value = '';
+
+                // Ẩn gợi ý
+                document.getElementById('searchSuggestions').style.display = 'none';
+
+                // Cập nhật danh sách sản phẩm
                 renderProductList();
             }
 
@@ -492,6 +299,31 @@
             document.getElementById('searchBox').addEventListener('input', searchProduct);
         });
 
+    </script>
+    <?php $ch = curl_init('http://localhost/website/admin/pages/get_promo.php');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+
+    if ($response === false) {
+        die("Lỗi cURL: " . curl_error($ch));
+    }
+
+    curl_close($ch);
+
+    $json_data = json_decode($response, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        die("JSON lỗi: " . json_last_error_msg());
+    }
+
+    echo "<pre>";
+    print_r($json_data);
+    echo "</pre>";
+    ?>
+    <script>
+        // Dữ liệu khuyến mãi từ PHP
+        const promotions = <?php echo json_encode($json_data); ?>;
+        console.log('promotion ===>', promotions);  
     </script>
 </body>
 
