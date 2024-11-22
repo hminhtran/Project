@@ -13,9 +13,10 @@ $ma_sp = isset($_GET['ma_sp']) ? $_GET['ma_sp'] : '';
 if ($ma_sp) {
     // Chuẩn bị câu lệnh SQL
     $stmt = $mysqli->prepare("SELECT 
-    stl.ma_theo_lo, 
+    stl.ma_theo_lo,
+    stl.ma_sp, 
     sp.TenSP, 
-    sp.GiaBan 
+    sp.GiaBan
 FROM 
     sp_theo_lo stl
 JOIN 

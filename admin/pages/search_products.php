@@ -8,7 +8,8 @@ if ($keyword) {
       SELECT 
     sanpham.TenSP, 
     sp_theo_lo.ma_theo_lo, 
-    sanpham.GiaBan
+    sanpham.GiaBan,
+    sp_theo_lo.ma_sp
 FROM 
    sp_theo_lo
 JOIN 

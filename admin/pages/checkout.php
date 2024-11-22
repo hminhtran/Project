@@ -64,6 +64,7 @@
                         <th>Tên sản phẩm</th>
                         <th>Giá bán</th>
                         <th>Số lượng</th>
+                        <th>Giảm giá</th>
                         <th>Tổng tiền</th>
                         <th>Hành động</th>
                     </tr>
@@ -73,11 +74,11 @@
                         <td colspan="6">Chưa có sản phẩm</td>
                     </tr>
                     <tr>
-                        <div id="discountSummary" style="font-weight: bold; color: red">
-                            <p>Giảm giá: 0 đ</p> <!-- Hiển thị giảm giá tại đây -->
-                        </div>
+                        <td colspan="4" style="text-align: right; font-weight: bold;">Tổng giảm giá</td>
+                        <td id="saleTotal" colspan="2" style="font-weight: bold;">0 đ</td>
                         <td colspan="4" style="text-align: right; font-weight: bold;">Tổng tiền đơn hàng:</td>
                         <td id="orderTotal" colspan="2" style="font-weight: bold;">0 đ</td>
+
                     </tr>
                 </tbody>
             </table>
@@ -207,7 +208,8 @@
                                min="1" 
                                onchange="updateQuantity(${index}, this.value)" />
                     </td>
-                    <td>${calculateTotal(product)} đ</td>
+                        <td>${applyPromotions(product)}</td> <!-- Hiển thị giảm giá -->
+                        <td>${calculateTotal(product) - (applyPromotions(product) || 0)} đ</td> <!-- Tổng tiền sau giảm giá -->
                     <td> <button class="btn btn-danger" onclick="removeProduct(${index})">Xóa</button></td>
                 `;
                         productTableBody.appendChild(row);
@@ -216,7 +218,9 @@
 
                 const totalRow = document.createElement('tr');
                 totalRow.innerHTML = `
-            <td colspan="4" style="text-align: right; font-weight: bold;">Tổng tiền đơn hàng:</td>
+                <td colspan="2" style="text-align: right; font-weight: bold;">Tổng giảm giá</td>
+                        <td id="saleTotal" colspan="1" style="font-weight: bold;">0 đ</td>
+            <td colspan="2" style="text-align: right; font-weight: bold;">Tổng tiền đơn hàng:</td>
             <td id="orderTotal" colspan="1" style="font-weight: bold;">${calculateOrderTotal()} đ</td>
             <td></td>
         `;
@@ -232,6 +236,7 @@
                 productList.splice(index, 1);
                 renderProductList();
             };
+
 
             // Tìm kiếm sản phẩm
             function searchProduct() {
@@ -269,6 +274,94 @@
                 });
                 suggestionsBox.style.display = 'block';
             }
+            <?php $ch = curl_init('http://localhost/website/admin/pages/get_promo.php');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+
+            if ($response === false) {
+                die("Lỗi cURL: " . curl_error($ch));
+            }
+
+            curl_close($ch);
+
+            $json_data = json_decode($response, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                die("JSON lỗi: " . json_last_error_msg());
+            }
+
+            ?>
+            // Dữ liệu khuyến mãi từ PHP
+            function applyPromotions(product) {
+                const promotions = <?php echo json_encode($json_data); ?>;
+                let discount = 0; // Định nghĩa discount ở đây
+
+                // Tìm khuyến mãi áp dụng cho sản phẩm hiện tại
+                const promotion = promotions.find(promo => promo.productId === product.ma_sp);
+                console.log('promotion ===>', promotion);
+
+                if (promotion) {
+                    const required = parseInt(promotion.criteria.quantityRequired || 0, 10); // Số lượng yêu cầu
+                    const promotionType = promotion.promotionType; // Loại khuyến mãi: "Buy X Sale"
+                    const discountPercent = parseFloat(promotion.discountPercent || 0); // Phần trăm giảm giá
+                    const discountValue = parseFloat(promotion.discountValue || 0); // Giá trị giảm giá cố định
+
+                    console.log('required ===>', required);
+                    console.log('promotionType ===>', promotionType);
+                    console.log('discountPercent ===>', discountPercent);
+                    console.log('discountValue ===>', discountValue);
+
+                    switch (promotionType) {
+                        case 'Buy X Get Y':
+                            if (product.quantity > required) {
+                                const eligibleGroups = Math.floor(product.quantity / required);
+                                discount = product.GiaBan * eligibleGroups;
+                            }
+                            break;
+                        case 'Buy X Sale':
+                            if (product.quantity > required) {
+                                const eligibleGroups = Math.floor(product.quantity / required);
+                                discount = (product.GiaBan * discountPercent / 100) * eligibleGroups;
+                            }
+                            break;
+                        case 'Discount':
+                            discount = product.quantity * (product.GiaBan * discountPercent / 100);
+                            break;
+                    }
+                }
+                return discount;  // Trả về giá trị giảm giá
+            }
+            function renderPromo(product) {
+                const promotions = <?php echo json_encode($json_data); ?>;
+
+
+                const promotion = promotions.find(promo => promo.productId === product.ma_sp);
+                console.log('promotion ===>', promotion);
+
+                if (promotion) {
+                    const required = parseInt(promotion.criteria.quantityRequired || 0, 10); // Số lượng yêu cầu
+                    const promotionType = promotion.promotionType; // Loại khuyến mãi: "Buy X Sale"
+                    const discountPercent = parseFloat(promotion.discountPercent || 0); // Phần trăm giảm giá
+                    const discountValue = parseFloat(promotion.discountValue || 0); // Giá trị giảm giá cố định
+                    let promotion = ""
+                    switch (promotionType) {
+                        case 'Buy X Get Y':
+                            promotion = "Mua " + required + " Tặng " + 1;
+                            break;
+                        case 'Buy X Sale':
+                            promotion = "Mua " + required + " Giảm " + discountPercent + "%";
+                            break;
+                        case 'Discount':
+                            promotion = "Giảm " + discountPercent + "%";
+                            break;
+                    }
+                }
+                return promotion;  // Trả về giá trị giảm giá
+            }
+
+
+
+
 
             // Hàm thêm sản phẩm vào danh sách
             function addProductToList(product) {
@@ -278,6 +371,7 @@
                     existingProduct.quantity += 1; // Nếu đã có sản phẩm, tăng số lượng
                 } else {
                     productList.push({
+                        ma_sp: product.ma_sp,
                         ma_theo_lo: product.ma_theo_lo,
                         TenSP: product.TenSP,
                         GiaBan: product.GiaBan,
@@ -300,31 +394,7 @@
         });
 
     </script>
-    <?php $ch = curl_init('http://localhost/website/admin/pages/get_promo.php');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
 
-    if ($response === false) {
-        die("Lỗi cURL: " . curl_error($ch));
-    }
-
-    curl_close($ch);
-
-    $json_data = json_decode($response, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        die("JSON lỗi: " . json_last_error_msg());
-    }
-
-    echo "<pre>";
-    print_r($json_data);
-    echo "</pre>";
-    ?>
-    <script>
-        // Dữ liệu khuyến mãi từ PHP
-        const promotions = <?php echo json_encode($json_data); ?>;
-        console.log('promotion ===>', promotions);  
-    </script>
 </body>
 
 </html>

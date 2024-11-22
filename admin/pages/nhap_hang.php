@@ -123,11 +123,11 @@ if (isset($_FILES["excel_file"]["name"]) && $_FILES["excel_file"]["name"]) {
                         $isAllSuccess = false;
                     }
                 } else {
-                    $sql_insert = "INSERT INTO lo_nhap (ma_sp, ma_theo_lo, so_luong, ngay_san_xuat,han_su_dung,ngay_nhap nha_cung_cap,ma_don,nguoi_nhan) 
+                    $sql_insert = "INSERT INTO lo_nhap (ma_sp, ma_theo_lo, so_luong, ngay_san_xuat,han_su_dung,ngay_nhap, nha_cung_cap,ma_don,nguoi_nhan) 
                                    VALUES ('$ma_sp', '$ma_theo_lo', '$so_luong', '$formatted_ngay_sx','$formatted_hsd',NOW(), '$nha_cung_cap', '$formattedTime','$nguoi_nhan')";
                     if ($conn->query($sql_insert) === TRUE) {
                     } else {
-                        $messages[] = "Lỗi: " . $sql_insert . "<br>" . $conn->error;
+                        echo $sql_insert . "<br>" . $conn->error;
                         $isAllSuccess = false;
                     }
                 }
